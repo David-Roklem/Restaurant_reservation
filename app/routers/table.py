@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from services import table as table_crud
+=======
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from services.table import get_all_tables
+>>>>>>> 5d1428e902c0355410f174c9ba053a3d4e1541d8
 from database import db_helper
 from schemas.table import TableCreate, TableRead
 
@@ -9,6 +15,7 @@ router = APIRouter(prefix="/tables", tags=["Tables"])
 
 @router.get("/", response_model=list[TableRead])
 async def get_tables(session: AsyncSession = Depends(db_helper.get_session_dependency)):
+<<<<<<< HEAD
     tables = await table_crud.get_all_tables(session=session)
     return tables
 
@@ -40,3 +47,7 @@ async def delete_table(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"Table #{table_id} not found!",
     )
+=======
+    tables = await get_all_tables(session=session)
+    return tables
+>>>>>>> 5d1428e902c0355410f174c9ba053a3d4e1541d8
