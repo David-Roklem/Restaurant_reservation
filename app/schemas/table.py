@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 class TableBase(BaseModel):
@@ -13,12 +13,3 @@ class TableRead(TableBase):
 
 class TableCreate(TableBase):
     pass
-
-
-
-# data = {
-#     "name": "Table 1",
-#     "seats": 10,
-#     "location": "Amidst the space",
-# }
-# print(TableCreate(**data))
