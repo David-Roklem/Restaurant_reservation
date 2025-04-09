@@ -1,10 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class TableBase(BaseModel):
-    name: str
-    seats: int
-    location: str
+    name: str = Field(max_length=50)
+    seats: int = Field(gt=0, le=14)
+    location: str = Field(max_length=100)
 
 
 class TableRead(TableBase):
