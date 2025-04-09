@@ -1,28 +1,26 @@
-from sqlalchemy import select
+from sqlalchemy import select, Sequence
 from sqlalchemy.ext.asyncio import AsyncSession
+from services.helpers import check_if_already_reserved
 from services.table import get_table
 from models.reservation import Reservation
 from schemas.reservation import ReservationCreate
 
 
-async def get_all_reservations(session: AsyncSession) -> list:
+async def get_all_reservations(session: AsyncSession) -> Sequence:
     stmt = select(Reservation).order_by(Reservation.id)
     result = await session.scalars(stmt)
     return result.all()
 
 
-async def get_reservation_upon_table(session: AsyncSession, table_id: int) -> list | None:
-    result = await session.execute(select(Reservation).where(Reservation.table_id == table_id))
-    if not result:
-        return None
-    reservations = result.scalars().all()
-
-
 async def create_reservation(session: AsyncSession, reservation_create: ReservationCreate) -> Reservation:
     table_id = reservation_create.table_id
+    reservation_time = reservation_create.reservation_time
+    duration_minutes = reservation_create.duration_minutes
     table = await get_table(session, table_id)
     if not table:
         return None
+    if await check_if_already_reserved(session, table_id, reservation_time, duration_minutes):
+        return "Reserved"
     reservation = Reservation(**reservation_create.model_dump())
     session.add(reservation)
     await session.commit()

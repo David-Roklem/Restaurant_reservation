@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from routers.exceptions import entity_not_found_ex
+from routers.exceptions import entity_not_found_ex, table_reserved_ex
 from services import reservation as reservation_crud
 from database import db_helper
 from schemas.reservation import ReservationCreate, ReservationRead
@@ -24,6 +24,8 @@ async def create_reservation(
         session=session,
         reservation_create=data_create,
     )
+    if res == "Reserved":
+        raise table_reserved_ex(table_id, "Table")
     if res:
         return res
     raise entity_not_found_ex(table_id, "Table")
