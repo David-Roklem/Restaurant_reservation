@@ -8,4 +8,4 @@ app.include_router(table.router)
 app.include_router(reservation.router)
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", reload=True)
+    uvicorn.run("main:app", host="api", reload=True)
